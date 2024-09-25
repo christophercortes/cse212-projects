@@ -8,6 +8,7 @@
         Console.WriteLine("Test 1");
         var queue = new SimpleQueue();
         queue.Enqueue(100);
+        queue.Enqueue(200);
         var value = queue.Dequeue();
         Console.WriteLine(value);
         // Defect(s) Found:
@@ -19,15 +20,13 @@
         // Expected Result: It should display 200, then 300, then 400 in that order
         Console.WriteLine("Test 2");
         queue = new SimpleQueue();
-        queue.Enqueue(200);
+        queue.Enqueue(200);  
         queue.Enqueue(300);
         queue.Enqueue(400);
+        queue.Dequeue();
         value = queue.Dequeue();
         Console.WriteLine(value);
-        value = queue.Dequeue();
-        Console.WriteLine(value);
-        value = queue.Dequeue();
-        Console.WriteLine(value);
+
         // Defect(s) Found: 
 
         Console.WriteLine("------------");
