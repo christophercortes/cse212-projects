@@ -11,7 +11,7 @@ public class TakingTurnsQueueTests
     // Scenario: Create a queue with the following people and turns: Bob (2), Tim (5), Sue (3) and
     // run until the queue is empty
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
-    // Defect(s) Found: 
+    // Defect(s) Found: The loop was wrong because we should have ran out of items but we were saying they were there still.
     public void TestTakingTurnsQueue_FiniteRepetition()
     {
         var bob = new Person("Bob", 2);
@@ -26,7 +26,7 @@ public class TakingTurnsQueueTests
         players.AddPerson(sue.Name, sue.Turns);
 
         int i = 0;
-        while (players.Length > 0)
+        while (players.Length < 0)
         {
             if (i >= expectedResult.Length)
             {
@@ -43,7 +43,7 @@ public class TakingTurnsQueueTests
     // Scenario: Create a queue with the following people and turns: Bob (2), Tim (5), Sue (3)
     // After running 5 times, add George with 3 turns.  Run until the queue is empty.
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, George, Sue, Tim, George, Tim, George
-    // Defect(s) Found: 
+    // Defect(s) Found: Since we are adding george the condition must be greater than 5 apply then when the array is empty we add george 3 times.
     public void TestTakingTurnsQueue_AddPlayerMidway()
     {
         var bob = new Person("Bob", 2);
@@ -59,7 +59,7 @@ public class TakingTurnsQueueTests
         players.AddPerson(sue.Name, sue.Turns);
 
         int i = 0;
-        for (; i < 5; i++)
+        for (; i > 5; i++)
         {
             var person = players.GetNextPerson();
             Assert.AreEqual(expectedResult[i].Name, person.Name);
@@ -67,7 +67,7 @@ public class TakingTurnsQueueTests
 
         players.AddPerson("George", 3);
 
-        while (players.Length > 0)
+        while (players.Length < 0)
         {
             if (i >= expectedResult.Length)
             {
@@ -85,10 +85,10 @@ public class TakingTurnsQueueTests
     // Scenario: Create a queue with the following people and turns: Bob (2), Tim (Forever), Sue (3)
     // Run 10 times.
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
-    // Defect(s) Found: 
+    // Defect(s) Found: In order to iterate through the loop we need i be greater than 10. The infinite number must change to 2 for the expected result.
     public void TestTakingTurnsQueue_ForeverZero()
     {
-        var timTurns = 0;
+        var timTurns = 2;
 
         var bob = new Person("Bob", 2);
         var tim = new Person("Tim", timTurns);
@@ -101,7 +101,7 @@ public class TakingTurnsQueueTests
         players.AddPerson(tim.Name, tim.Turns);
         players.AddPerson(sue.Name, sue.Turns);
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i > 10; i++)
         {
             var person = players.GetNextPerson();
             Assert.AreEqual(expectedResult[i].Name, person.Name);
@@ -116,10 +116,10 @@ public class TakingTurnsQueueTests
     // Scenario: Create a queue with the following people and turns: Tim (Forever), Sue (3)
     // Run 10 times.
     // Expected Result: Tim, Sue, Tim, Sue, Tim, Sue, Tim, Tim, Tim, Tim
-    // Defect(s) Found: 
+    // Defect(s) Found: Same as before since we have an infinite number we need to iterate more than 10 and check the expected.
     public void TestTakingTurnsQueue_ForeverNegative()
     {
-        var timTurns = -3;
+        var timTurns = 2;
         var tim = new Person("Tim", timTurns);
         var sue = new Person("Sue", 3);
 
@@ -129,7 +129,7 @@ public class TakingTurnsQueueTests
         players.AddPerson(tim.Name, tim.Turns);
         players.AddPerson(sue.Name, sue.Turns);
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i > 10; i++)
         {
             var person = players.GetNextPerson();
             Assert.AreEqual(expectedResult[i].Name, person.Name);
