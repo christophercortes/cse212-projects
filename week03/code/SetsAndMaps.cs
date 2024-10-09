@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.VisualBasic;
 
 public static class SetsAndMaps
 {
@@ -22,7 +23,23 @@ public static class SetsAndMaps
     public static string[] FindPairs(string[] words)
     {
         // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        HashSet<string> symmetric = new HashSet<string>();
+        HashSet<string> symetric2 = new HashSet<string>(words);
+
+        foreach (var word in words)
+        {
+            var reversed = new string(word.Reverse().ToArray());
+            if (symetric2.Contains(reversed) && word != reversed)
+            {
+                if (string.Compare(word, reversed) < 0)
+                {
+                    var pair = $"{word} & {reversed}";
+                    symmetric.Add(pair);
+                }
+            }
+        }
+
+        return symmetric.ToArray();
     }
 
     /// <summary>
@@ -43,6 +60,18 @@ public static class SetsAndMaps
         {
             var fields = line.Split(",");
             // TODO Problem 2 - ADD YOUR CODE HERE
+            if (fields.Length > 3)
+            {
+                var degree = fields[3].Trim();
+                if (degrees.ContainsKey(degree))
+                {
+                    degrees[degree]++;
+                }
+                else
+                {
+                    degrees[degree] = 1;
+                }
+            }
         }
 
         return degrees;
@@ -67,7 +96,30 @@ public static class SetsAndMaps
     public static bool IsAnagram(string word1, string word2)
     {
         // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
+        Dictionary<char, int> GetCharCount(string word)
+        {
+            var charCount = new Dictionary<char, int>();
+            foreach (char c in word)
+            {
+                if (c != ' ')
+                {
+                    char lowerChar = char.ToLower(c);
+                    if (charCount.ContainsKey(lowerChar))
+                    {
+                        charCount[lowerChar]++;
+                    }
+                    else
+                    {
+                        charCount[lowerChar] = 1;
+                    }
+                }
+            }
+            return charCount;
+        }
+        var count1 = GetCharCount(word1);
+        var count2 = GetCharCount(word2);
+
+        return count1.Count == count2.Count && !count1.Except(count2).Any();
     }
 
     /// <summary>
@@ -101,6 +153,31 @@ public static class SetsAndMaps
         // on those classes so that the call to Deserialize above works properly.
         // 2. Add code below to create a string out each place a earthquake has happened today and its magitude.
         // 3. Return an array of these string descriptions.
-        return [];
+        if (featureCollection == null || featureCollection.Features == null || featureCollection.Features.Count == 0)
+        {
+            return new string[] { "No data available." };
+        }
+
+        var earthquakeDescription = new List<string>();
+
+        foreach (var feature in featureCollection.Features)
+        {
+            string place = feature.Properties.Place ?? "Unknown location";
+            
+            if (feature.Properties.Mag.HasValue)
+            {
+                string magnitude = feature.Properties.Mag.Value.ToString("F1");
+                earthquakeDescription.Add($"Location: {place}, - Mag {magnitude}");
+            }
+            else
+            {
+                earthquakeDescription.Add($"Location: {place} - Mag Unknown");
+            }
+        }
+        if (earthquakeDescription.Count < 5)
+        {
+            return new string[] { "Not enough earthquake data available." };
+        }
+        return earthquakeDescription.ToArray();
     }
 }
